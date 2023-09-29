@@ -6,7 +6,7 @@ on:
 env:
   TF_CLOUD_ORGANIZATION: "netcloudy"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "netcloudy-t103"
+  TF_WORKSPACE: "netcloudy-test"
   CONFIG_DIRECTORY: "./"
 
 jobs:
