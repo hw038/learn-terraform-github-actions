@@ -1,0 +1,7 @@
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - prod
+  pull_request:
