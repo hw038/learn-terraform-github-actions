@@ -16,7 +16,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = "ap-northeast-2"
 }
 
 resource "random_pet" "sg" {}
@@ -37,9 +37,24 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    environment = var.environment
+  }
+
+}
+
+resource "aws_subnet" "primary" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.1.0/24"
+}
+
+
 resource "aws_instance" "web" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.primary.id
   vpc_security_group_ids = [aws_security_group.web-sg.id]
 
   user_data = <<-EOF
@@ -53,7 +68,8 @@ resource "aws_instance" "web" {
 }
 
 resource "aws_security_group" "web-sg" {
-  name = "${random_pet.sg.id}-sg"
+  name   = "${random_pet.sg.id}-sg"
+  vpc_id = aws_vpc.main.id
   ingress {
     from_port   = 8080
     to_port     = 8080
